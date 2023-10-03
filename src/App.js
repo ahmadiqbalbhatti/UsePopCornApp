@@ -45,7 +45,6 @@ const tempWatchedData = [
 ];
 
 
-
 export default function App() {
     const [movies, setMovies] = useState(tempMovieData);
     const [watched, setWatched] = useState(tempWatchedData);
@@ -54,16 +53,26 @@ export default function App() {
         <>
             {/*Component Composition Way*/}
             <Navbar>
-                <NumResults movies={movies} />
+                <NumResults movies={movies}/>
             </Navbar>
             <Main>
-                <Box>
+                <Box element={
                     <MoviesList movies={movies}/>
-                </Box>
-                <Box>
-                    <WatchedMoviesSummary watched={watched}/>
-                    <WatchedMoviesList watched={watched}/>
-                </Box>
+                }/>
+
+                <Box element={
+                    <>
+                        <WatchedMoviesSummary watched={watched}/>
+                        <WatchedMoviesList watched={watched}/>
+                    </>
+                }/>
+                {/*<Box>*/}
+                {/*    <MoviesList movies={movies}/>*/}
+                {/*</Box>*/}
+                {/*<Box>*/}
+                {/*    <WatchedMoviesSummary watched={watched}/>*/}
+                {/*    <WatchedMoviesList watched={watched}/>*/}
+                {/*</Box>*/}
                 {/*<WatchedMoviesListBox/>*/}
             </Main>
         </>
