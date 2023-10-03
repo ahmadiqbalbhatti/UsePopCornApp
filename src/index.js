@@ -1,10 +1,10 @@
-import React, {useState} from 'react';
+import React from 'react';
 import ReactDOM from 'react-dom/client';
 // import StarRating from "./StarRating";
-import SectionChallenge from "./SectionChallenge";
-// import './index.css';
-// import App from './App';
-import './styles.css'
+// import SectionChallenge from "./SectionChallenge";
+import './index.css';
+import App from './App';
+// import './styles.css'
 
 // function Test() {
 //     const [movieRating, setMovieRating] = useState(0 );
@@ -22,9 +22,16 @@ import './styles.css'
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
     <React.StrictMode>
-        <SectionChallenge/>
+        <App/>
     </React.StrictMode>
 )
+
+
+// root.render(
+//     <React.StrictMode>
+//         <SectionChallenge/>
+//     </React.StrictMode>
+// )
 
 // root.render(
 //     <React.StrictMode>
