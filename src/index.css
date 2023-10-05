@@ -54,7 +54,8 @@ body {
   max-width: 50rem;
   background-color: var(--color-background-500);
   border-radius: 0.9rem;
-  overflow: hidden;
+  overflow: auto;
+  overflow-x: hidden;
   position: relative;
 }
 
