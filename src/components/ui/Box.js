@@ -1,21 +1,25 @@
 import {useState} from "react";
+import ToggleButton from "./ToggleButton";
 
 const Box = ({children}) => {
     // const [isOpen1, setIsOpen1] = useState(true);
 
     const [isOpen, setIsOpen] = useState(true)
+
+    const handleIsOpen = () => {
+        setIsOpen((open) => !open)
+    }
+
     return (
         <div className="box">
-            <button
-                className="btn-toggle"
-                onClick={() => setIsOpen((open) => !open)}
-            >
+            <ToggleButton onIsOpen={handleIsOpen}>
                 {isOpen ? "–" : "+"}
-            </button>
+            </ToggleButton>
             {isOpen && children}
         </div>
     )
 }
+
 // const Box = ({element}) => {
 //     // const [isOpen1, setIsOpen1] = useState(true);
 //

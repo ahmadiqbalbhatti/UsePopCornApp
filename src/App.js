@@ -1,7 +1,15 @@
-import Navbar, {NumResults, SearchBar} from "./Navbar";
-import Main, {MovieDetails, MoviesList, WatchedMoviesList, WatchedMoviesSummary} from "./Main";
+import Navbar from "./components/ui/Navbar";
+import Main from "./components/ui/Main";
 import {useEffect, useState} from "react";
-import Box from "./Box";
+import Box from "./components/ui/Box";
+import Loader from "./components/ui/Loader";
+import ErrorMessage from "./components/ui/ErrorMessage";
+import MoviesList from "./components/MoviesList";
+import MovieDetails from "./components/MovieDetails";
+import WatchedMoviesList from "./components/WatchedMoviesList";
+import WatchedMoviesSummary from "./components/WatchedMoviesSummary";
+import NumResults from "./components/ui/NumResults";
+import SearchBar from "./components/ui/SearchBar";
 
 //
 // const tempMovieData = [
@@ -121,7 +129,7 @@ export default function App() {
                 if (data.Response === "False") throw new Error("☹ Movies Not Found ☹");
 
                 setMovies(data.Search)
-                console.log(data.Search)
+                // console.log(data.Search)
             } catch (e) {
                 console.error(e.message);
                 if (e.name !== 'AbortError') {
@@ -190,17 +198,4 @@ export default function App() {
 }
 
 
-function Loader() {
-    return <p className={"loader"}>Loading...</p>
-}
-
-function ErrorMessage({message}) {
-    return (<p className={"error"}>
-        {/*<span>🚩</span>*/}
-        {message}
-    </p>)
-
-}
-
-
-export {API_KEY, Loader}
+export {API_KEY}

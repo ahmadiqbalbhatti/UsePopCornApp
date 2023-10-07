@@ -1,7 +1,7 @@
-import Navbar, {NumResults} from "./Navbar";
-import Main, {MoviesList, WatchedMoviesList, WatchedMoviesSummary} from "./Main";
+import Navbar, {NumResults} from "./components/ui/Navbar";
+import Main, {MoviesList, WatchedMoviesList, WatchedMoviesSummary} from "./components/ui/Main";
 import {useState} from "react";
-import Box from "./Box";
+import Box from "./components/ui/Box";
 
 
 const tempMovieData = [
