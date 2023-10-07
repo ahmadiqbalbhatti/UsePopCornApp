@@ -41,7 +41,7 @@ const MovieDetails = ({selectedId, onCloseMovie, onAddWatchedMovie, watched}) =>
         function callbackFun(e) {
             if (e.code === "Escape") {
                 onCloseMovie();
-                console.log("CLoosing")
+                // console.log("CLoosing")
             }
         }
 
@@ -66,7 +66,7 @@ const MovieDetails = ({selectedId, onCloseMovie, onAddWatchedMovie, watched}) =>
 
                 setMovie(data)
 
-                console.log(data)
+                // console.log(data)
                 setIsLoading(false);
             } catch (e) {
                 if (e.name !== 'AbortError') return;
