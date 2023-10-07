@@ -1,4 +1,6 @@
-import {useState} from "react";
+import {useEffect, useState} from "react";
+import {API_KEY, Loader} from "./App";
+import StarRating from "./StarRating";
 
 // const tempWatchedData = [
 //     {
@@ -52,21 +54,21 @@ const Main = ({children}) => {
 //     )
 // }
 
-const MoviesList = ({movies}) => {
+const MoviesList = ({movies, onSelectMovie}) => {
 
     return (
-        <ul className="list">
+        <ul className="list list-movies">
             {movies?.map((movie) => (
                 //   may be required to create a component
-                <MovieItem movie={movie} key={movie.imdbID}/>
+                <MovieItem movie={movie} key={movie.imdbID} onSelectMovie={onSelectMovie}/>
             ))}
         </ul>
     )
 }
 
-const MovieItem = ({movie}) => {
+const MovieItem = ({movie, onSelectMovie}) => {
     return (
-        <li key={movie.imdbID}>
+        <li key={movie.imdbID} onClick={() => onSelectMovie(movie.imdbID)}>
             <img src={movie.Poster} alt={`${movie.Title} poster`}/>
             <h3>{movie.Title}</h3>
             <div>
@@ -105,6 +107,105 @@ const MovieItem = ({movie}) => {
 //     )
 // }
 
+
+const MovieDetails = ({selectedId, onCloseMovie, onAddWatchedMovie}) => {
+    const [movie, setMovie] = useState({});
+    const [isLoading, setIsLoading] = useState(false);
+
+
+    const {
+        imdbID,
+        Title: title,
+        Poster: poster,
+        Runtime: runtime,
+        imdbRating,
+        Plot: plot,
+        Released: released,
+        Actors: actors,
+        Director: director,
+        Genre: genre
+    } = movie;
+
+    // console.log(title, year, poster, runtime, imdbRating ,plot, released, actors, director, genre )
+
+
+    function handleAddWatchedMovie() {
+        const newMovie = {
+            imdbID,
+            title,
+            poster,
+            runtime: Number(runtime.split(" ").at(0)),
+            imdbRating: Number(imdbRating),
+        }
+
+        onAddWatchedMovie(newMovie);
+        onCloseMovie();
+    }
+
+
+
+    useEffect(() => {
+        async function getMovieDetails() {
+            setIsLoading(true);
+            const response = await fetch(`http://www.omdbapi.com/?apikey=${API_KEY}&i=${selectedId}`);
+            if (!response.ok) return;
+
+            const data = await response.json();
+            setMovie(data)
+
+            console.log(data)
+            setIsLoading(false);
+
+        }
+
+        getMovieDetails();
+
+    }, [selectedId]);
+
+    return (
+        <div className={"details"}>
+            {
+                isLoading ? <Loader/> :
+                    <>
+                        <header>
+                            <button className="btn-back" onClick={onCloseMovie}>
+                                &larr;
+                            </button>
+
+                            <img src={poster} alt={`Poster of ${movie} movie`}/>
+
+                            <div className="details-overview">
+                                <h2>{title}</h2>
+                                <p>{released} &bull; {runtime}</p>
+                                <p>{genre}</p>
+                                <p><span>⭐</span>{imdbRating} IMDB Rating</p>
+                            </div>
+
+                        </header>
+
+                        <section>
+                            <div className="rating">
+                                <StarRating maxRating={10} size={24}/>
+                                <button className="btn-add" onClick={handleAddWatchedMovie}>Add to List</button>
+                            </div>
+                            <p>
+                                <em>{plot}</em>
+                            </p>
+
+                            <p>Starring By {actors}</p>
+                            <p>Directed By {director}</p>
+
+                        </section>
+
+                    </>
+            }
+
+            {/*{selectedId}*/}
+        </div>
+    )
+
+
+}
 const WatchedMoviesSummary = ({watched}) => {
     const avgImdbRating = average(watched.map((movie) => movie.imdbRating));
     const avgUserRating = average(watched.map((movie) => movie.userRating));
@@ -129,7 +230,7 @@ const WatchedMoviesSummary = ({watched}) => {
                 </p>
                 <p>
                     <span>⏳</span>
-                    <span>{avgRuntime} min</span>
+                    <span>{Math.round(avgRuntime)} min</span>
                 </p>
             </div>
         </div>
@@ -150,8 +251,8 @@ const WatchedMoviesList = ({watched}) => {
 const WatchedMovieItem = ({movie}) => {
     return (
         <li key={movie.imdbID}>
-            <img src={movie.Poster} alt={`${movie.Title} poster`}/>
-            <h3>{movie.Title}</h3>
+            <img src={movie.poster} alt={`${movie.title} poster`}/>
+            <h3>{movie.title}</h3>
             <div>
                 <p>
                     <span>⭐️</span>
@@ -178,5 +279,6 @@ export {
     MovieItem,
     WatchedMoviesSummary,
     WatchedMoviesList,
-    WatchedMovieItem
+    WatchedMovieItem,
+    MovieDetails
 }
