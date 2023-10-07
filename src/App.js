@@ -80,10 +80,12 @@ export default function App() {
     }
 
     function handleAddWatchedMovie(movie) {
-        setWatched(watched => [...watched, movie])
-
+        if (!watched.some((watchedMovie) => watchedMovie.imdbID === movie.imdbID)) setWatched(watched => [...watched, movie])
     }
 
+    function handleDeleteWatchedMovie(id) {
+        setWatched(watched => watched.filter(movie => movie.imdbID !== id))
+    }
 
     /*
         useEffect(() => {
@@ -103,12 +105,16 @@ export default function App() {
     */
 
 
+
+
     useEffect(function () {
+        const controller = new AbortController();
+
         async function fetchMovies() {
             try {
                 setIsLoading(true);
                 setError("");
-                const response = await fetch(`http://www.omdbapi.com/?apikey=${API_KEY}&s=${query}`);
+                const response = await fetch(`http://www.omdbapi.com/?apikey=${API_KEY}&s=${query}`, {signal: controller.signal});
                 if (!response.ok) throw new Error("<span>🚩</span> Something Went wrong with fetching movies.");
 
                 const data = await response.json();
@@ -118,7 +124,11 @@ export default function App() {
                 console.log(data.Search)
             } catch (e) {
                 console.error(e.message);
-                setError(e.message);
+                if (e.name !== 'AbortError') {
+
+                    setError(e.message);
+                }
+
 
             } finally {
                 setIsLoading(false)
@@ -132,6 +142,10 @@ export default function App() {
         }
 
         fetchMovies();
+
+        return () => {
+            controller.abort();
+        }
     }, [query]);
 
 
@@ -160,15 +174,15 @@ export default function App() {
                 {error && <ErrorMessage message={error}/>}
             </Box>
             <Box>
-                {selectedId ?
-                    <MovieDetails
-                        selectedId={selectedId}
-                        onCloseMovie={handleCloseMovie}
-                        onAddWatchedMovie={handleAddWatchedMovie}
-                    /> : <>
-                        <WatchedMoviesSummary watched={watched}/>
-                        <WatchedMoviesList watched={watched}/>
-                    </>}
+                {selectedId ? <MovieDetails
+                    selectedId={selectedId}
+                    onCloseMovie={handleCloseMovie}
+                    onAddWatchedMovie={handleAddWatchedMovie}
+                    watched={watched}
+                /> : <>
+                    <WatchedMoviesSummary watched={watched}/>
+                    <WatchedMoviesList watched={watched} onDeleteWatchedMovie={handleDeleteWatchedMovie}/>
+                </>}
             </Box>
             {/*<WatchedMoviesListBox/>*/}
         </Main>

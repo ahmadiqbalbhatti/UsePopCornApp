@@ -15,7 +15,7 @@ const StarRating = ({
                         className = "",
                         message = [],
                         defaultRating = 0,
-                        onRatingChange = () => {
+                        onRatingChange = rating => {
                         },
                     }) => {
 
