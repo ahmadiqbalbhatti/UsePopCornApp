@@ -1,16 +1,25 @@
-import {useEffect, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import {API_KEY} from "../App";
 import Loader from "./ui/Loader";
 import StarRating from "./StarRating";
+import {useKey} from "./DataLogic/useKey";
 
 const MovieDetails = ({selectedId, onCloseMovie, onAddWatchedMovie, watched}) => {
     const [movie, setMovie] = useState({});
     const [isLoading, setIsLoading] = useState(false);
     const [userRating, setUserRating] = useState('');
 
+    const countRef = useRef(0);
+
+    useEffect(() => {
+        if (userRating)
+            countRef.current = countRef.current + 1;
+    }, [userRating]);
+
+
     const isWatched = watched.map(movie => movie.imdbID).includes(selectedId);
 
-    console.log(isWatched)
+    // console.log(isWatched)
 
     const {
         imdbID,
@@ -30,26 +39,19 @@ const MovieDetails = ({selectedId, onCloseMovie, onAddWatchedMovie, watched}) =>
 
     function handleAddWatchedMovie() {
         const newMovie = {
-            imdbID, title, poster, runtime: Number(runtime.split(" ").at(0)), imdbRating: Number(imdbRating), userRating
+            imdbID,
+            title,
+            poster,
+            runtime: Number(runtime.split(" ").at(0)),
+            imdbRating: Number(imdbRating),
+            userRating,
+            countRatingDecisions: countRef.current,
         }
         onAddWatchedMovie(newMovie);
         onCloseMovie();
     }
 
-
-    useEffect(() => {
-        function callbackFun(e) {
-            if (e.code === "Escape") {
-                onCloseMovie();
-                // console.log("CLoosing")
-            }
-        }
-
-        document.addEventListener("keydown", callbackFun)
-        return function () {
-            document.removeEventListener('keydown', callbackFun);
-        }
-    }, [onCloseMovie]);
+    useKey('Escape', onCloseMovie)
 
     useEffect(() => {
 
